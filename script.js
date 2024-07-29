@@ -1,12 +1,34 @@
-// I originally tried using JQuery to create a typewriter effect so that letters would appear one by one, but it was convoluted and didn't really have a great effect.
-// Sometimes the best solutions are just the simplest ones.
+let currentLine = 1;
+let currentLetterIndex = 0;
+let typing = false;
 
- let currentLine = 1;
-
-document.addEventListener('keydown', function() {
-    const nextLine = document.getElementById(`line${currentLine}`);
-    if (nextLine) {
-        nextLine.classList.remove('hidden');
-        currentLine++;
+document.addEventListener('keydown', function(event) {
+    if (event.code === 'Space' && !typing) {
+        const nextLine = document.getElementById(`line${currentLine}`);
+        if (nextLine) {
+            typing = true;
+            typeWriter(nextLine);
+        }
     }
 });
+
+function typeWriter(element) {
+    const text = element.textContent;
+    element.textContent = '';
+    element.classList.remove('hidden');
+    
+    let index = 0;
+
+    function type() {
+        if (index < text.length) {
+            element.textContent += text.charAt(index);
+            index++;
+            setTimeout(type, 50); 
+        } else {
+            typing = false;
+            currentLine++;
+        }
+    }
+
+    type();
+}
